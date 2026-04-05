@@ -1,0 +1,63 @@
+---
+description: Core flow rules for search distribution, response capture, and match notification
+globs:
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# Core Flow Rules
+
+The core MVP flow is:
+
+1. distribute search
+2. receive yes/no
+3. request property summary on yes
+4. create structured response
+5. create operational match
+6. notify seeker on WhatsApp
+7. persist evidence in Firestore
+
+## Flow rules
+
+### Search distribution
+A distribution flow should:
+- identify relevant recipients
+- create outreach records
+- send the initial WhatsApp message
+- initialize or update the conversation thread
+
+### Negative reply
+A negative reply should:
+- update outreach response state
+- update response stats where needed
+- close or reset the thread appropriately
+
+### Positive reply
+A positive reply should:
+- update outreach response state
+- move the thread to awaiting_property_summary
+- send the summary request message
+
+### Property summary
+A property summary flow should:
+- validate the message has enough useful content
+- optionally extract structured fields
+- create a response record
+- create the match record
+- notify the seeker agent by WhatsApp
+- generate the direct wa.me link to the responder
+- persist all relevant evidence
+
+## Seeker notification rule
+
+The seeker notification must include:
+- short summary of the property
+- commission information
+- direct WhatsApp link to the responder
+
+The seeker should not need the web app to take the main action.
+
+## Evidence rule
+
+The web app is not the trigger for connection.
+Firestore is the evidence and operational history layer.

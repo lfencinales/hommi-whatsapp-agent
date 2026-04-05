@@ -1,0 +1,95 @@
+---
+description: Architecture and layering rules for the Hommi WhatsApp Agent
+globs:
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# Architecture Rules
+
+## Repository purpose
+
+This repository is a standalone backend service for the Hommi WhatsApp agent.
+
+Use a simple modular backend architecture with clear layers.
+
+## Required layers
+
+Organize code by domain/module and by layer.
+
+Preferred module shape:
+
+- application/
+- domain/
+- infrastructure/
+- schemas/
+
+Example modules:
+- whatsapp
+- outreach
+- responses
+- matches
+- contacts
+- searches
+- shared
+
+## Layer responsibilities
+
+### domain
+Contains:
+- domain types
+- domain rules
+- state definitions
+- pure logic with no framework dependencies when possible
+
+### application
+Contains:
+- use cases
+- orchestration logic
+- flow coordination across repositories/providers
+
+### infrastructure
+Contains:
+- Firestore repositories
+- Meta WhatsApp client
+- environment access
+- logger integrations
+- external adapters
+
+### schemas
+Contains:
+- zod schemas
+- DTO validation
+- payload parsing contracts
+
+## Strict architectural rules
+
+- Do not put business logic in route handlers.
+- Do not put Firestore queries directly in controllers if a repository belongs there.
+- Do not couple Meta API code with domain rules.
+- Do not mix webhook parsing with match creation logic.
+- Do not create giant service files with unrelated responsibilities.
+- Prefer small use cases over “god services”.
+
+## Route layer rules
+
+Routes/controllers should only:
+- receive the request
+- validate input
+- call a use case
+- map result to HTTP response
+- log or surface errors appropriately
+
+## Dependency direction
+
+Application depends on domain abstractions.
+Infrastructure implements those abstractions.
+Routes call application use cases.
+
+Keep dependency flow clean and obvious.
+
+## Code organization preference
+
+Favor explicit files over clever abstractions.
+Favor readability over excessive indirection.
+Avoid premature generic frameworks.

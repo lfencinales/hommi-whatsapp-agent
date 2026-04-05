@@ -1,0 +1,78 @@
+---
+description: Meta WhatsApp Cloud API integration rules
+globs:
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# Meta WhatsApp Integration Rules
+
+This service uses Meta WhatsApp Cloud API as the official messaging provider.
+
+## Integration principles
+
+- Treat Meta as an infrastructure provider.
+- Isolate Meta-specific code inside the whatsapp/infrastructure layer.
+- Never spread Graph API request details across the codebase.
+- All outgoing WhatsApp calls should go through a dedicated provider/client.
+
+## Required integration boundaries
+
+Create a dedicated client/provider for:
+- webhook verification
+- parsing inbound webhook payloads
+- sending text/template messages
+- mapping Meta responses into internal DTOs
+
+## Webhook rules
+
+Expose:
+- GET /webhook for verification
+- POST /webhook for inbound events
+
+Webhook handlers must:
+- validate payload structure
+- ignore unsupported event types safely
+- normalize inbound messages into internal shapes
+- delegate processing to use cases
+
+## Message sending rules
+
+All outgoing messages must:
+- go through a single client abstraction
+- return a typed result
+- include provider response IDs when available
+- log success and failure clearly
+
+## Template/session mindset
+
+Design the provider in a way that supports:
+- template messages
+- free-form/session messages
+
+Do not hardcode the codebase around a single message type forever.
+
+## Error handling
+
+Meta API errors must be:
+- captured
+- logged with enough context
+- mapped to typed application errors when appropriate
+
+Avoid silent failures.
+
+## Direct WhatsApp links
+
+When the seeker should contact the responder directly, generate a wa.me link using a dedicated utility/use case.
+Do not generate raw links ad hoc in controllers or string templates scattered across files.
+
+## Tone and messaging
+
+Outgoing WhatsApp messages should be:
+- brief
+- human
+- direct
+- clear
+- operational
+
+Avoid robotic language and avoid long multi-paragraph messages.

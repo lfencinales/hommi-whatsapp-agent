@@ -1,0 +1,93 @@
+---
+description: Firestore and conversation state rules
+globs:
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# Firestore and State Rules
+
+Firestore is the shared source of truth for this service.
+
+## Data principles
+
+Every important operational transition must be persisted when relevant.
+
+Key collections include:
+- agents
+- contacts
+- searches
+- outreach
+- responses
+- matches
+- conversation_threads
+- system_config
+
+## State-first design
+
+This service must be built around explicit operational states, not around free-form chat behavior.
+
+### Conversation thread states
+Use explicit states such as:
+- idle
+- awaiting_yes_no
+- awaiting_property_summary
+- summary_received
+- closed
+
+### Outreach states
+Track delivery and response states clearly.
+
+### Response states
+Track progression from received to validated/notified/matched as needed.
+
+### Match states
+Track creation, notification, link delivery, and closing as explicit states.
+
+## State transition rules
+
+All transitions must be:
+- deterministic
+- validated
+- traceable
+
+Do not transition critical state from vague natural language alone without validation.
+
+## Firestore access rules
+
+- Encapsulate Firestore access in repositories/adapters.
+- Prefer typed repository methods over scattered inline queries.
+- Keep read/write operations explicit and easy to follow.
+- Avoid hidden side effects.
+
+## Consistency rules
+
+When useful, a use case may update multiple documents across collections, but the logic must remain readable and intentional.
+
+Be careful with:
+- outreach updates
+- response creation
+- match creation
+- conversation thread transitions
+- response stats updates
+
+## Logging and traceability
+
+Whenever relevant, log:
+- inbound message received
+- outbound message attempted
+- outbound message sent/failed
+- state transitions
+- response creation
+- match creation
+- seeker notification
+
+Do not create noisy logs with no operational value.
+
+## Validation rule
+
+Before creating a match and notifying the seeker, confirm at minimum:
+- the search is still active or usable
+- the responder is known
+- a useful property summary exists
+- contact data needed for connection is available

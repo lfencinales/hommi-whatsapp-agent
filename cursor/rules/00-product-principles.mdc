@@ -1,0 +1,60 @@
+---
+description: Product principles and core behavior for the Hommi WhatsApp Agent
+globs:
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# Hommi WhatsApp Agent — Product Principles
+
+This repository is the WhatsApp agent service for Hommi.
+
+## Core principle
+
+The connection happens on WhatsApp. The evidence stays in Hommi.
+
+This service is responsible for:
+- receiving and processing WhatsApp messages
+- sending search opportunities to relevant contacts and agents
+- asking for a property summary when someone says they have a match
+- creating operational match records
+- notifying the seeker agent on WhatsApp
+- giving the seeker a direct WhatsApp link to contact the responder
+- writing all important transitions to Firestore
+
+## Product boundaries
+
+This repository is not the web app.
+Do not add UI concerns, frontend abstractions, React code, or browser-specific logic.
+
+The web app organizes and displays information.
+This service distributes, interprets, and connects.
+
+## Behavioral principles
+
+- Keep flows simple and operational.
+- Prefer deterministic logic over open-ended behavior.
+- Use explicit states.
+- Minimize ambiguity in conversation flows.
+- Keep messages short, direct, and natural.
+- Never make the bot overly chatty.
+- The bot should not negotiate, improvise commission rules, or invent business logic.
+
+## AI usage boundaries
+
+Use AI only when it clearly helps with:
+- ambiguous yes/no interpretation
+- extracting a property summary into structured JSON
+- light classification support
+
+Never use AI to:
+- publish searches
+- decide duplicate logic
+- create or close critical states without deterministic validation
+- change directory states
+- pause contacts automatically without programmed rules
+
+## MVP mindset
+
+Favor speed, clarity, and operational reliability over sophistication.
+Build the smallest reliable version first.

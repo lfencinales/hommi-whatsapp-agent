@@ -1,0 +1,87 @@
+---
+description: Code style, implementation discipline, and delivery standards
+globs:
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# Code Style and Delivery Rules
+
+## General style
+
+Use:
+- strict TypeScript
+- small functions
+- clear names
+- explicit types where useful
+- zod for input/output validation
+- minimal but useful comments
+
+Avoid:
+- vague variable names
+- giant files
+- deeply nested conditionals when simpler flow is possible
+- over-abstracted generic helpers too early
+
+## Naming
+
+Prefer names that explain intent clearly.
+
+Good examples:
+- handleIncomingWhatsAppMessage
+- processYesNoReply
+- requestPropertySummary
+- createMatchAndNotifySeeker
+- generateDirectWhatsAppLink
+
+Bad examples:
+- processData
+- handleStuff
+- serviceUtil
+- helperFn
+
+## Function design
+
+Each function should ideally do one thing well.
+If a route handler becomes large, move logic to a use case.
+If a use case becomes large, split into smaller application helpers or domain functions.
+
+## Validation
+
+Use Zod schemas for:
+- environment variables
+- webhook payloads
+- request DTOs
+- relevant provider responses when practical
+
+Never trust inbound payloads blindly.
+
+## Error handling
+
+Use explicit error handling.
+Fail safely and visibly.
+Prefer typed/application-level errors when useful.
+Do not swallow errors.
+
+## Delivery preference
+
+When generating code:
+- produce real code, not pseudo-architecture
+- include the files that make the feature runnable
+- keep TODOs precise and limited
+- prefer a working skeleton over theoretical completeness
+
+## Testing mindset
+
+When adding logic-heavy flows, keep code testable.
+Pure logic should be easy to unit test.
+Parsing and state transition logic should not be buried inside framework code.
+
+## Practicality rule
+
+Choose the simplest implementation that keeps:
+- boundaries clear
+- code maintainable
+- behavior reliable
+
+Do not introduce unnecessary complexity just because it looks architecturally elegant.
